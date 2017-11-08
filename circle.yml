@@ -1,0 +1,9 @@
+dependencies:
+  override:
+    - go get -d -u github.com/hashicorp/terraform
+
+test:
+  pre:
+    - go vet ./...
+  override:
+    - make test
