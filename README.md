@@ -23,7 +23,7 @@ providers {
 }
 EOF
 ```
-and ensure that the $GOPATH variable is properly configured and `$GOPATH/bin` is accessible under the `$PATH`.
+It might be  necessary to ensure that the `$GOPATH` variable is properly configured and `$GOPATH/bin` is accessible under the `$PATH`.
 
 ## Requirements
 
