@@ -13,6 +13,7 @@
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
+# CircleCI temporary files
 .circleci
 
 # Ignore the results of the execution of tests.

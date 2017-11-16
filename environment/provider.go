@@ -1,4 +1,4 @@
-package main
+package environment
 
 import (
 	"log"
@@ -32,6 +32,11 @@ func Provider() terraform.ResourceProvider {
 				},
 			},
 		},
+
+		DataSourcesMap: map[string]*schema.Resource{
+			"binding": dataSource(),
+		},
+
 		ResourcesMap: map[string]*schema.Resource{
 		//"ldap_object": resourceLDAPObject(),
 		},
