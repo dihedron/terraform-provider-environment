@@ -11,11 +11,6 @@ import (
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"version": &schema.Schema{
-				Type:        schema.TypeString,
-				Description: "The version of the environment provider.",
-				Optional:    true,
-			},
 			"bindings": {
 				Type:        schema.TypeSet,
 				Description: "The map of environment bindings.",
