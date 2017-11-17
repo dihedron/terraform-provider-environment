@@ -18,15 +18,18 @@ func dataSource() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
-				Type:     schema.TypeString,
-				Required: true,
-				Elem: &schema.Schema{
-					Type: schema.TypeString,
-				},
+				Type:        schema.TypeString,
+				Description: "The name of the binding, e.g. 'production' or 'quality'.",
+				Required:    true,
+				/*
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				*/
 			},
-			"variables": {
+			"filters": {
 				Type:        schema.TypeSet,
-				Description: "The map of environment bindings.",
+				Description: "The list of variables to be bound.",
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
@@ -48,8 +51,7 @@ func dataSource() *schema.Resource {
 					},
 				},
 			},
-
-			"values": &schema.Schema{
+			"variables": &schema.Schema{
 				Type:        schema.TypeMap,
 				Description: "The map of bound variables.",
 				Computed:    true,

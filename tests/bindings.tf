@@ -19,3 +19,16 @@ provider "environment" {
         },
     ]
 }
+
+data "environment" "http_test" {
+	name = "production"
+  #url = "http://www.google.com"
+}
+
+/*
+output "body" {
+  value = "${data.http.http_test.body}"
+}
+
+data "environment" 
+*/

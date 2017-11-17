@@ -34,7 +34,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"binding": dataSource(),
+			"environment": dataSource(),
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -44,6 +44,10 @@ func Provider() terraform.ResourceProvider {
 	}
 }
 
+type Config struct {
+	Bindings map[string]string
+}
+
 func configureProvider(d *schema.ResourceData) (interface{}, error) {
 	bindings, ok := d.Get("bindings").([]interface{})
 	if !ok {
@@ -51,6 +55,9 @@ func configureProvider(d *schema.ResourceData) (interface{}, error) {
 	} else {
 		log.Printf("[INFO] There are %d bindings provided\n", len(bindings))
 	}
+
+	config := Config{}
+	config.Bindings = make(map[string]string)
 	/*
 		config := Config{
 			LDAPHost:     d.Get("ldap_host").(string),
@@ -67,5 +74,5 @@ func configureProvider(d *schema.ResourceData) (interface{}, error) {
 
 		return connection, nil
 	*/
-	return nil, nil
+	return config, nil
 }

@@ -19,3 +19,5 @@
 # Ignore the results of the execution of tests.
 tests/*.tfstate*
 tests/.terraform
+
+crash.log
