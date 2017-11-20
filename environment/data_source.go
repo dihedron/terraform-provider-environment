@@ -19,7 +19,7 @@ func dataSource() *schema.Resource {
 		Schema: map[string]*schema.Schema{
 			"name": &schema.Schema{
 				Type:        schema.TypeString,
-				Description: "The name of the binding, e.g. 'production' or 'quality'.",
+				Description: "The name of the environment to be bound, e.g. 'production' or 'quality'.",
 				Required:    true,
 				/*
 					Elem: &schema.Schema{
@@ -35,7 +35,7 @@ func dataSource() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"name": {
 							Type:        schema.TypeString,
-							Description: "The name of the binding, e.g. 'production' or 'quality'.",
+							Description: "The name of the variable to set (case sensitive).",
 							Required:    true,
 						},
 						"override": {
@@ -45,7 +45,7 @@ func dataSource() *schema.Resource {
 						},
 						"default": {
 							Type:        schema.TypeString,
-							Description: "The default value to used if not available in the bindings.",
+							Description: "The default value to be used if no value is available in the bindings.",
 							Optional:    true,
 						},
 					},
@@ -53,7 +53,7 @@ func dataSource() *schema.Resource {
 			},
 			"variables": &schema.Schema{
 				Type:        schema.TypeMap,
-				Description: "The map of bound variables.",
+				Description: "The map of bound variables, name to value.",
 				Computed:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,

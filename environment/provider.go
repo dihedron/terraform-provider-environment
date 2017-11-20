@@ -11,21 +11,21 @@ import (
 func Provider() terraform.ResourceProvider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"bindings": {
+			"environments": {
 				Type:        schema.TypeSet,
-				Description: "The map of environment bindings.",
+				Description: "The map of environments or tiers (e.g. development, production, quality).",
 				Required:    true,
 				MinItems:    1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"name": {
 							Type:        schema.TypeString,
-							Description: "The name of the binding, e.g. 'production' or 'quality'.",
+							Description: "The name of the environment, e.g. 'production' or 'quality'.",
 							Required:    true,
 						},
 						"url": {
 							Type:        schema.TypeString,
-							Description: "The URL of the key/value file containing the bindings for the iven environment.",
+							Description: "The URL of the key/value file containing the bindings for the given environment.",
 							Required:    true,
 						},
 					},
@@ -34,7 +34,7 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"environment": dataSource(),
+			"bindings": dataSource(),
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
@@ -49,7 +49,7 @@ type Config struct {
 }
 
 func configureProvider(d *schema.ResourceData) (interface{}, error) {
-	bindings, ok := d.Get("bindings").([]interface{})
+	bindings, ok := d.Get("environments").([]interface{})
 	if !ok {
 		log.Println(`[ERROR] No bindings provided`)
 	} else {

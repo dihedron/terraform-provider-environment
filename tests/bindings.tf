@@ -4,7 +4,7 @@ provider "environment" {
 #    version = "~> 1.0.0"
 #    version = "1.0.0"
     # specify potential bindings, each with its own label and URL
-    bindings = [{ 
+    environments = [{ 
              name    = "production"      
              url     = "http://www.example.com/environments?binding=production"
         }, {
@@ -20,15 +20,17 @@ provider "environment" {
     ]
 }
 
-data "environment" "http_test" {
-	name = "production"
-  #url = "http://www.google.com"
+data "environment_bindings" "my" {
+	name = "production",
+    filters = [{
+        name = "PATH"
+        override = true
+        default = "/home/andrea/bin"
+    }]
 }
 
-/*
+
 output "body" {
-  value = "${data.http.http_test.body}"
+  value = "${data.environment_bindings.my.variables}"
 }
 
-data "environment" 
-*/
