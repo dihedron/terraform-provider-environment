@@ -34,45 +34,36 @@ func Provider() terraform.ResourceProvider {
 		},
 
 		DataSourcesMap: map[string]*schema.Resource{
-			"bindings": dataSource(),
+			"environment_bindings": dataSource(),
 		},
 
-		ResourcesMap: map[string]*schema.Resource{
-		//"ldap_object": resourceLDAPObject(),
-		},
+		ResourcesMap:  map[string]*schema.Resource{},
 		ConfigureFunc: configureProvider,
 	}
 }
 
+// Config represents the provider's configuration, as a map
+// of environments names to URLs.
 type Config struct {
 	Bindings map[string]string
 }
 
 func configureProvider(d *schema.ResourceData) (interface{}, error) {
-	bindings, ok := d.Get("environments").([]interface{})
-	if !ok {
-		log.Println(`[ERROR] No bindings provided`)
-	} else {
-		log.Printf("[INFO] There are %d bindings provided\n", len(bindings))
-	}
-
 	config := Config{}
 	config.Bindings = make(map[string]string)
-	/*
-		config := Config{
-			LDAPHost:     d.Get("ldap_host").(string),
-			LDAPPort:     d.Get("ldap_port").(int),
-			UseTLS:       d.Get("use_tls").(bool),
-			BindUser:     d.Get("bind_user").(string),
-			BindPassword: d.Get("bind_password").(string),
-		}
 
-		connection, err := config.initiateAndBind()
-		if err != nil {
-			return nil, err
+	for _, environments := range (d.Get("environments").(*schema.Set)).List() {
+		var name, url string
+		for k, v := range environments.(map[string]interface{}) {
+			switch k {
+			case "name":
+				name = v.(string)
+			case "url":
+				url = v.(string)
+			}
 		}
-
-		return connection, nil
-	*/
+		config.Bindings[name] = url
+		log.Printf("[INFO] environment::configureProvider - adding binding %q with URL %q\n", name, url)
+	}
 	return config, nil
 }

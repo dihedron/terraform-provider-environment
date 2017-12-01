@@ -3,6 +3,7 @@ package environment
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"mime"
 	"net/http"
 	"regexp"
@@ -65,43 +66,47 @@ func dataSource() *schema.Resource {
 
 func dataSourceRead(d *schema.ResourceData, meta interface{}) error {
 
-	url := d.Get("url").(string)
-	headers := d.Get("request_headers").(map[string]interface{})
-
-	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return fmt.Errorf("Error creating request: %s", err)
+	name := d.Get("name").(string)
+	log.Printf("[INFO] environment::dataSourceRead - data source bound to %q\n", name)
+	config := meta.(Config)
+	for name, url := range config.Bindings {
+		log.Printf("[TRACE] environment::dataSourceRead - URL for %q bindings is %q\n", name, url)
 	}
+	if url, ok := config.Bindings[name]; ok {
+		client := &http.Client{}
 
-	for name, value := range headers {
-		req.Header.Set(name, value.(string))
+		req, err := http.NewRequest("GET", url, nil)
+		if err != nil {
+			return fmt.Errorf("Error creating request: %s", err)
+		}
+
+		resp, err := client.Do(req)
+		if err != nil {
+			return fmt.Errorf("Error while making a request: %s", url)
+		}
+
+		defer resp.Body.Close()
+
+		if resp.StatusCode != 200 {
+			return fmt.Errorf("HTTP request error. Response code: %d", resp.StatusCode)
+		}
+
+		contentType := resp.Header.Get("Content-Type")
+		if contentType == "" || isContentTypeAllowed(contentType) == false {
+			return fmt.Errorf("Content-Type is not a plain text type. Got: %s", contentType)
+		}
+
+		bytes, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("Error while reading response body. %s", err)
+		}
+
+		// TODO: scan the file one line at a time, skip comments and parse variables, then
+		// store them into the variables computed field.
+		d.Set("body", string(bytes))
+		d.SetId(time.Now().UTC().String())
+
 	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return fmt.Errorf("Error during making a request: %s", url)
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("HTTP request error. Response code: %d", resp.StatusCode)
-	}
-
-	contentType := resp.Header.Get("Content-Type")
-	if contentType == "" || isContentTypeAllowed(contentType) == false {
-		return fmt.Errorf("Content-Type is not a text type. Got: %s", contentType)
-	}
-
-	bytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("Error while reading response body. %s", err)
-	}
-
-	d.Set("body", string(bytes))
-	d.SetId(time.Now().UTC().String())
 
 	return nil
 }
@@ -117,9 +122,9 @@ func isContentTypeAllowed(contentType string) bool {
 	}
 
 	allowedContentTypes := []*regexp.Regexp{
-		regexp.MustCompile("^text/.+"),
-		regexp.MustCompile("^application/json$"),
-		regexp.MustCompile("^application/samlmetadata\\+xml"),
+		regexp.MustCompile("^text/plain"),
+		//regexp.MustCompile("^application/json$"),
+		//regexp.MustCompile("^application/samlmetadata\\+xml"),
 	}
 
 	for _, r := range allowedContentTypes {

@@ -36,8 +36,8 @@ It might be  necessary to ensure that the `$GOPATH` variable is properly configu
 provider "environment" {
     # restrict provider version in 0.1.x
     version = "~> 0.1"
-    # specify potential bindings, each with its own label and URL
-    bindings = [{ 
+    # specify potential environments, each with its own label and URL
+    environments = [{ 
              name    = "production"      
              url     = "http://www.example.com/environments/production?format=json"
         }, {
@@ -54,10 +54,10 @@ provider "environment" {
 }
 ```
 
-## Resource "Environment Binding" example
+## Datasource "Environment Binding" example
 
 ```
-resource "environment_binding" "my" {
+datasource "environment_binding" "my" {
     name        = "certification",
     variables   = [{
 	    name    = "PATH",

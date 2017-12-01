@@ -6,7 +6,8 @@ provider "environment" {
     # specify potential bindings, each with its own label and URL
     environments = [{ 
              name    = "production"      
-             url     = "http://www.example.com/environments?binding=production"
+#             url     = "http://www.example.com/environments?binding=production"
+            url = "http://localhost:8000/variables.txt"
         }, {
              name    = "certification"      
              url     = "http://www.example.com/environments?binding=certification"
@@ -23,14 +24,16 @@ provider "environment" {
 data "environment_bindings" "my" {
 	name = "production",
     filters = [{
-        name = "PATH"
-        override = true
-        default = "/home/andrea/bin"
-    }]
+            name = "PATH"
+            override = true
+            default = "/home/andrea/bin"
+        },
+    ]
 }
 
 
 output "body" {
-  value = "${data.environment_bindings.my.variables}"
+  value = "${data.environment_bindings.my.name}"
 }
+
 

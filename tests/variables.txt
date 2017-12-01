@@ -1,0 +1,4 @@
+PATH=/usr/local/bin
+# comment
+WHATEVER=whatever
+WHATEVER=whatever
