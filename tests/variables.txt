@@ -1,4 +1,6 @@
 PATH=/usr/local/bin
 # comment
 WHATEVER=whatever
-WHATEVER=whatever
+  WHATEVER_ELSE ="whatever can be valued "# a comment
+
+

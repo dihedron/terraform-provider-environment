@@ -9,7 +9,8 @@ import (
 
 func main() {
 
-	log.Println("[INFO] Environment plugin starting")
+	log.SetFlags(0)
+	log.Println("[INFO] main: plugin starting")
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: environment.Provider,
 	})

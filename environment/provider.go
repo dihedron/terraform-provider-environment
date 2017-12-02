@@ -63,7 +63,7 @@ func configureProvider(d *schema.ResourceData) (interface{}, error) {
 			}
 		}
 		config.Bindings[name] = url
-		log.Printf("[INFO] environment::configureProvider - adding binding %q with URL %q\n", name, url)
+		log.Printf("[INFO] configureProvider: bindings for %q at URL %q\n", name, url)
 	}
 	return config, nil
 }
